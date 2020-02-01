@@ -1,0 +1,124 @@
+verdi:
+  defines: [
+    VERILATOR,
+  ]   
+  options: [
+    -sverilog,
+    -2012
+  ]
+
+vcs:
+  defines: [
+    FPU_ARIANE,
+  ]   
+  options: [
+    -sverilog,
+    '-assert svaext',
+    '+lint=TFIPC-L',
+    '-timescale=1ns/1ps',
+  ]
+  
+ariane:
+  root : '$ARIANE_ROOT'
+  incdirs: [
+    include,
+    src/fpu/src/common_cells/include,
+    src/util/
+  ]
+  files: [
+    include/riscv_pkg.sv,
+    src/riscv-dbg/src/dm_pkg.sv,
+    $ARIANE_SIMENV_ROOT/hack/ariane_pkg.sv,
+    include/std_cache_pkg.sv,
+    src/axi/src/axi_pkg.sv,
+    tb/ariane_soc_pkg.sv,
+    include/ariane_axi_pkg.sv,
+    src/fpu/src/fpnew_pkg.sv,
+    src/fpu_wrap.sv,
+    src/fpu/src/fpnew_top.sv,
+    src/fpu/src/fpnew_opgroup_block.sv,
+    src/fpu/src/fpnew_opgroup_fmt_slice.sv,
+    src/fpu/src/fpnew_cast_multi.sv,
+    src/fpu/src/fpnew_classifier.sv,
+    src/fpu/src/fpnew_divsqrt_multi.sv,
+    src/fpu/src/fpnew_fma.sv,
+    src/fpu/src/fpnew_fma_multi.sv,
+    src/fpu/src/fpnew_noncomp.sv,
+    src/fpu/src/fpnew_opgroup_multifmt_slice.sv,  
+    src/fpu/src/fpnew_rounding.sv,
+    src/fpu/src/fpu_div_sqrt_mvp/hdl/defs_div_sqrt_mvp.sv,
+    src/fpu/src/fpu_div_sqrt_mvp/hdl/control_mvp.sv,
+    src/fpu/src/fpu_div_sqrt_mvp/hdl/div_sqrt_top_mvp.sv,
+    src/fpu/src/fpu_div_sqrt_mvp/hdl/iteration_div_sqrt_mvp.sv,
+    src/fpu/src/fpu_div_sqrt_mvp/hdl/norm_div_sqrt_mvp.sv,
+    src/fpu/src/fpu_div_sqrt_mvp/hdl/nrbd_nrsc_mvp.sv,
+    src/fpu/src/fpu_div_sqrt_mvp/hdl/preprocess_mvp.sv,
+    src/alu.sv,
+    src/amo_buffer.sv,
+    src/ariane.sv,
+    src/axi_adapter.sv,
+    src/branch_unit.sv,
+    src/commit_stage.sv,
+    src/compressed_decoder.sv,
+    src/controller.sv,
+    src/csr_buffer.sv,
+    src/csr_regfile.sv,
+    src/decoder.sv,
+    src/ex_stage.sv,
+    src/id_stage.sv,
+    src/instr_realign.sv,
+    src/issue_read_operands.sv,
+    src/issue_stage.sv,
+    src/load_store_unit.sv,
+    src/load_unit.sv,
+    src/mmu.sv,
+    src/mult.sv,
+    src/multiplier.sv,
+    src/perf_counters.sv,
+    src/ptw.sv,
+    src/re_name.sv,
+    src/scoreboard.sv,
+    src/serdiv.sv,
+    src/store_buffer.sv,
+    src/store_unit.sv,
+    src/tlb.sv,
+    src/frontend/bht.sv,
+    src/frontend/btb.sv,
+    src/frontend/frontend.sv,
+    src/frontend/instr_queue.sv,
+    src/frontend/instr_scan.sv,
+    src/frontend/ras.sv,
+    src/cache_subsystem/std_cache_subsystem.sv,
+    src/cache_subsystem/std_icache.sv,
+    src/cache_subsystem/std_nbdcache.sv,
+    src/cache_subsystem/cache_ctrl.sv,
+    src/cache_subsystem/miss_handler.sv,
+    src/cache_subsystem/tag_cmp.sv, 
+    src/cache_subsystem/amo_alu.sv,
+    src/common_cells/src/stream_arbiter.sv,
+    src/common_cells/src/stream_arbiter_flushable.sv,
+    src/common_cells/src/stream_demux.sv,
+    src/common_cells/src/stream_mux.sv,  
+    src/common_cells/src/lzc.sv,
+    src/common_cells/src/lfsr_8bit.sv,    
+    src/common_cells/src/unread.sv,
+    src/common_cells/src/popcount.sv,    
+    src/common_cells/src/shift_reg.sv,
+    src/common_cells/src/fifo_v3.sv,    
+    src/tech_cells_generic/src/cluster_clock_gating.sv,    
+    src/common_cells/src/rr_arb_tree.sv,
+    include/instr_tracer_pkg.sv,
+    src/util/instr_tracer_if.sv,  
+    $ARIANE_SIMENV_ROOT/hack/instr_tracer.sv, 
+    src/util/sram.sv,     
+    src/fpga-support/rtl/SyncSpRamBeNx64.sv,
+    $ARIANE_SIMENV_ROOT/hack/ariane_single_core.sv,  
+    $ARIANE_SIMENV_ROOT/hack/ariane_regfile.sv,     
+  ]
+  
+tb:
+    root : '$ARIANE_SIMENV_ROOT'
+    files : [
+        tb/tb.sv,
+        tb/axi_sram.sv
+    ]
