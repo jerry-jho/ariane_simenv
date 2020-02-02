@@ -4,6 +4,12 @@ APP=smoke
 
 WORKDIR=work
 
+BOOT_ADDR=1000 
+
+MEM_SEL=MEM_IN
+
+MEM_BASE=0x0
+
 mkwork:
 	mkdir -p $(WORKDIR)    
 
@@ -21,9 +27,17 @@ vcs_nowave: mkwork gen_flist_vcs
 
 vcs: mkwork gen_flist_vcs
 	cd $(WORKDIR) && rm -rf top.fsdb
-	cd $(WORKDIR) && $(SCRIPTS)/vcs.sh -f flist_rtl -fsdb +define+_FSDB   
+	cd $(WORKDIR) && $(SCRIPTS)/vcs.sh -f flist_rtl -fsdb +define+_FSDB  
+    
 sim: mkwork sw
 	cd $(WORKDIR) && ./simv +MEM_IN=$(ARIANE_SIMENV_ROOT)/tests/$(APP)/app.m64
+    
+elf: mkwork
+	make -f $(ARIANE_SIMENV_ROOT)/sw/bin/Makefile elf2m64 \
+        APP=$(APP) OUT=$(WORKDIR)/app.m64 TEMPMEM=$(WORKDIR)/app.mem BASE=$(MEM_BASE)
+    
+simelf: mkwork elf
+	cd $(WORKDIR) && ./simv +$(MEM_SEL)=app.m64 +BOOT_ADDR=$(BOOT_ADDR)   
     
 sw:
 	cd $(ARIANE_SIMENV_ROOT)/tests/$(APP) && make -f $(ARIANE_SIMENV_ROOT)/sw/bin/Makefile

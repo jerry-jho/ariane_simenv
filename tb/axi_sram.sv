@@ -120,8 +120,8 @@ reg [DATA_WIDTH-1:0] mem[(2**MEM_ADDR_WIDTH)-1:0];
 
 wire [VALID_ADDR_WIDTH-1:0] s_axi_awaddr_valid = s_axi_awaddr >> (ADDR_WIDTH - VALID_ADDR_WIDTH);
 wire [VALID_ADDR_WIDTH-1:0] s_axi_araddr_valid = s_axi_araddr >> (ADDR_WIDTH - VALID_ADDR_WIDTH);
-wire [VALID_ADDR_WIDTH-1:0] read_addr_valid = read_addr_reg >> (ADDR_WIDTH - VALID_ADDR_WIDTH);
-wire [VALID_ADDR_WIDTH-1:0] write_addr_valid = write_addr_reg >> (ADDR_WIDTH - VALID_ADDR_WIDTH);
+wire [VALID_ADDR_WIDTH-1:0] read_addr_valid = (read_addr_reg >> (ADDR_WIDTH - VALID_ADDR_WIDTH)) & ((2**MEM_ADDR_WIDTH)-1);
+wire [VALID_ADDR_WIDTH-1:0] write_addr_valid = (write_addr_reg >> (ADDR_WIDTH - VALID_ADDR_WIDTH)) & ((2**MEM_ADDR_WIDTH)-1);
 
 assign s_axi_awready = s_axi_awready_reg;
 assign s_axi_wready = s_axi_wready_reg;

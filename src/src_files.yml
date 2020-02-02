@@ -1,6 +1,5 @@
 verdi:
   defines: [
-    VERILATOR,
   ]   
   options: [
     -sverilog,

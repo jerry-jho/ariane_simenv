@@ -35,12 +35,18 @@ else
 endif
 
 MEM64=python3 $(SDK_ROOT)/bin/process_mem.py
-
+OUT=app.m64
+TEMPMEM=app.mem
+BASE=0x0
 firmware:
 	$(GCC) $(INCLUDES) $(CFLAGS) $(ARCH_IMC) $(APP) $(STARTUP) $(MAINSRC) -T$(LD_SCRIPT) -o app.elf
 	$(OBJDUMP) -dx --source app.elf > app.lst
 	$(OBJCOPY) -O verilog app.elf app.mem
-	$(MEM64) app.mem 64 > app.m64
+	$(MEM64) app.mem 64 $(BASE) > app.m64
+    
+elf2m64:
+	$(OBJCOPY) -O verilog $(APP) $(TEMPMEM)
+	$(MEM64) $(TEMPMEM) 64 $(BASE) > $(OUT)	
 	
 
 

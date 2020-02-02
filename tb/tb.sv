@@ -18,20 +18,30 @@ module tb;
         repeat(10000) @(posedge clk);
 		$finish;
     end
-    string m64_file;
+    string im64_file;
+    string xm64_file;
+    
+    logic [63:0] BOOT_ADDR = 'h1000;
+    
     initial begin
-        if ($value$plusargs("MEM_IN=%s", m64_file)) begin
-            $display("-- Reading %s",m64_file);
-            $readmemh(m64_file,imem.mem);
+        if ($value$plusargs("MEM_IN=%s", im64_file)) begin
+            $display("-- Reading imem = %s",im64_file);
+            $readmemh(im64_file,imem.mem);
         end
+        if ($value$plusargs("MEM_XN=%s", xm64_file)) begin
+            $display("-- Reading xmem = %s",xm64_file);
+            $readmemh(xm64_file,xmem.mem);
+        end    
+        if ($value$plusargs("BOOT_ADDR=%x", BOOT_ADDR)) begin
+            
+        end
+        $display("-- BOOT_ADDR = %016X",BOOT_ADDR);
     end
     
-    always @(negedge clk) begin
-        if (imem.mem_wr_en && imem.write_addr_valid == (64'h30000 >> 3)) begin
-            $display("-- Exit code %016X",i_axi_wdata);
-            repeat(20) @(posedge clk);
-            $finish;
-        end
+    always @(posedge ariane_single_core.i_ariane.id_stage_i.decoder_i.ecall) begin
+        $display("-- Exit code %016X",ariane_single_core.i_ariane.instr_tracer_i.gp_reg_file[10]);
+        repeat(20) @(posedge clk);
+        $finish;
     end
     
     localparam AXI_DATA_WIDTH = 64;
@@ -111,7 +121,7 @@ module tb;
     wire                        x_axi_rvalid;
     wire                        x_axi_rready;    
     
-    localparam BOOT_ADDR = 64'h1000;
+    
     
     ariane_single_core (
         .clk(clk),

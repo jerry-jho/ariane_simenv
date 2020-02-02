@@ -1,8 +1,9 @@
 import sys
 from collections import OrderedDict
 
-_,filename,w = sys.argv
+_,filename,w,b = sys.argv
 w = int(w) >> 3
+b = int(b,base=16)
 mdata = OrderedDict()
 addr = 0
 min_addr = None
@@ -53,7 +54,7 @@ while True:
         addr_jump = True
         continue
     if addr_jump:
-        print('@%08X' % (addr // w))    
+        print('@%08X' % ((addr-b) // w))    
         addr_jump = False
     line=''
     for _ in range(w):
