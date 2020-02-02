@@ -25,3 +25,10 @@ On Linux (Ubuntu or CentOS) or WSL
 
 1. *make sim APP=foo* will build app in ariane_simenv/tests/foo
 2. *make sw APP=foo* only builds firmware
+
+## Run riscv-tests
+
+1. Go https://github.com/riscv/riscv-tests and install
+2. Run any riscv tests, like rv64ui-p-xor, by *make sim_riscv-tests ELF=$RISCV_TESTS_INSTALL/share/riscv-tests/isa/rv64ui-p-xor*
+
+        
