@@ -2,7 +2,7 @@
  ENTRY( _start )
  SECTIONS
  {
-     . = 0x100A0;
+     . = 0x1000;
      .init :
      {
      *(.init)

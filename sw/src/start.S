@@ -36,6 +36,7 @@ _start:
     
 	lui  sp, 0x18
 	call crtmain
+    ecall
 deadloop:
     j deadloop
 

@@ -27,7 +27,7 @@ module tb;
     end
     
     always @(negedge clk) begin
-        if (imem.mem_wr_en && imem.write_addr_valid == (64'h10000 >> 3)) begin
+        if (imem.mem_wr_en && imem.write_addr_valid == (64'h30000 >> 3)) begin
             $display("-- Exit code %016X",i_axi_wdata);
             repeat(20) @(posedge clk);
             $finish;
@@ -111,7 +111,7 @@ module tb;
     wire                        x_axi_rvalid;
     wire                        x_axi_rready;    
     
-    localparam BOOT_ADDR = 64'h100A0;
+    localparam BOOT_ADDR = 64'h1000;
     
     ariane_single_core (
         .clk(clk),
