@@ -23,6 +23,10 @@ module tb;
     
     logic [63:0] BOOT_ADDR = 'h1000;
     
+    logic check_a0 = 0;
+    logic [63:0] expect_a0_data;
+    logic [63:0] fetch_a0_data;
+    
     initial begin
         if ($value$plusargs("MEM_IN=%s", im64_file)) begin
             $display("-- Reading imem = %s",im64_file);
@@ -36,10 +40,22 @@ module tb;
             
         end
         $display("-- BOOT_ADDR = %016X",BOOT_ADDR);
+        if ($value$plusargs("CHECK_A0=%x", expect_a0_data)) begin
+            check_a0 = 1'b1;
+        end        
     end
     
     always @(posedge ariane_single_core.i_ariane.id_stage_i.decoder_i.ecall) begin
-        $display("-- Exit code %016X",ariane_single_core.i_ariane.instr_tracer_i.gp_reg_file[10]);
+        fetch_a0_data = ariane_single_core.i_ariane.instr_tracer_i.gp_reg_file[10];
+        $display("-- Exit code %016X",fetch_a0_data);
+        if (check_a0) begin
+            $display("--------------------------------------");
+            if (expect_a0_data === fetch_a0_data)
+            $display("                 PASS");    
+            else
+            $display("        FAIL: Expect: %016X, Get: %016X",expect_a0_data,fetch_a0_data); 
+            $display("--------------------------------------");
+        end
         repeat(20) @(posedge clk);
         $finish;
     end

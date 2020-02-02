@@ -10,6 +10,8 @@ MEM_SEL=MEM_IN
 
 MEM_BASE=0x0
 
+CHECK_A0=
+
 mkwork:
 	mkdir -p $(WORKDIR)    
 
@@ -34,10 +36,13 @@ sim: mkwork sw
     
 elf: mkwork
 	make -f $(ARIANE_SIMENV_ROOT)/sw/bin/Makefile elf2m64 \
-        APP=$(APP) OUT=$(WORKDIR)/app.m64 TEMPMEM=$(WORKDIR)/app.mem BASE=$(MEM_BASE)
+        ELF=$(ELF) OUT=$(WORKDIR)/app.m64 TEMPMEM=$(WORKDIR)/app.mem BASE=$(MEM_BASE)
     
-simelf: mkwork elf
-	cd $(WORKDIR) && ./simv +$(MEM_SEL)=app.m64 +BOOT_ADDR=$(BOOT_ADDR)   
+sim_elf: mkwork elf
+	cd $(WORKDIR) && ./simv +$(MEM_SEL)=app.m64 +BOOT_ADDR=$(BOOT_ADDR) $(CHECK_A0) 
+    
+sim_riscv-tests:
+	make sim_elf MEM_SEL=MEM_XN BOOT_ADDR=80000000 MEM_BASE=0x80000000 ELF=$(ELF) CHECK_A0='+CHECK_A0=0'
     
 sw:
 	cd $(ARIANE_SIMENV_ROOT)/tests/$(APP) && make -f $(ARIANE_SIMENV_ROOT)/sw/bin/Makefile

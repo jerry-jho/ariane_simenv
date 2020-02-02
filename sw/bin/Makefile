@@ -45,7 +45,7 @@ firmware:
 	$(MEM64) app.mem 64 $(BASE) > app.m64
     
 elf2m64:
-	$(OBJCOPY) -O verilog $(APP) $(TEMPMEM)
+	$(OBJCOPY) -O verilog $(ELF) $(TEMPMEM)
 	$(MEM64) $(TEMPMEM) 64 $(BASE) > $(OUT)	
 	
 
