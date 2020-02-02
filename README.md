@@ -9,8 +9,8 @@ On Linux (Ubuntu or CentOS) or WSL
 2. Download a 64bit risc-v gcc toolchain from SiFive
 3. Get source code
 
-  git clone https://github.com/jerry-jho/ariane_local
-  git clone https://github.com/jerry-jho/ariane_simenv
+    git clone https://github.com/jerry-jho/ariane_local
+    git clone https://github.com/jerry-jho/ariane_simenv
   
 4. Edit setup.bash or setup.csh, set your repo location and risc-v gcc, and source this file.
 
