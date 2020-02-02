@@ -176,11 +176,11 @@ ariane:
     src/rv_plic/rtl/plic_top.sv,
     src/rv_plic/rtl/rv_plic_gateway.sv,   
     src/rv_plic/rtl/rv_plic_target.sv,  
-    $ARIANE_SIMENV_ROOT/hack/apb_uart_sv-pulpinov1/apb_uart_sv.sv
-    $ARIANE_SIMENV_ROOT/hack/apb_uart_sv-pulpinov1/io_generic_fifo.sv
-    $ARIANE_SIMENV_ROOT/hack/apb_uart_sv-pulpinov1/uart_interrupt.sv
-    $ARIANE_SIMENV_ROOT/hack/apb_uart_sv-pulpinov1/uart_rx.sv
-    $ARIANE_SIMENV_ROOT/hack/apb_uart_sv-pulpinov1/uart_tx.sv   
+    $ARIANE_SIMENV_ROOT/hack/apb_uart_sv-pulpinov1/apb_uart_sv.sv,
+    $ARIANE_SIMENV_ROOT/hack/apb_uart_sv-pulpinov1/io_generic_fifo.sv,
+    $ARIANE_SIMENV_ROOT/hack/apb_uart_sv-pulpinov1/uart_interrupt.sv,
+    $ARIANE_SIMENV_ROOT/hack/apb_uart_sv-pulpinov1/uart_rx.sv,
+    $ARIANE_SIMENV_ROOT/hack/apb_uart_sv-pulpinov1/uart_tx.sv,  
     $ARIANE_SIMENV_ROOT/hack/ariane_peripherals.sv,
     $ARIANE_SIMENV_ROOT/hack/axim2p.sv,
     $ARIANE_SIMENV_ROOT/hack/ariane_single_core.sv,  
