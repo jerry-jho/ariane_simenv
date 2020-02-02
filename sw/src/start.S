@@ -34,7 +34,7 @@ _start:
     mv x31, x1
     
     
-	lui  sp, 0x8
+	lui  sp, 0x18
 	call crtmain
 deadloop:
     j deadloop
