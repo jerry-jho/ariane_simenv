@@ -12,17 +12,19 @@ MEM_BASE=0x0
 
 CHECK_A0=
 
+MAIN_SRC=$(ARIANE_SIMENV_ROOT)/src/src_files.yml
+
 mkwork:
 	mkdir -p $(WORKDIR)    
 
 gen_flist_verdi:mkwork
-	cd $(WORKDIR) && python3 $(SCRIPTS)/ariane_yml_vcs.py $(ARIANE_SIMENV_ROOT)/src/src_files.yml verdi,ariane,tb > flist_verdi
+	cd $(WORKDIR) && python3 $(SCRIPTS)/process_flist_yml.py -f $(MAIN_SRC) -k verdi,ariane,tb > flist_verdi
 	
 verdi: mkwork gen_flist_verdi
 	cd $(WORKDIR) && $(SCRIPTS)/verdi.sh -f flist_verdi -ssf top.fsdb
 	
 gen_flist_vcs: mkwork
-	cd $(WORKDIR) && python3 $(SCRIPTS)/ariane_yml_vcs.py $(ARIANE_SIMENV_ROOT)/src/src_files.yml vcs,ariane,tb > flist_rtl
+	cd $(WORKDIR) && python3 $(SCRIPTS)/process_flist_yml.py -f $(MAIN_SRC) -k vcs,ariane,tb > flist_rtl
 	
 vcs_nowave: mkwork gen_flist_vcs
 	cd $(WORKDIR) && $(SCRIPTS)/vcs.sh -f flist_rtl
