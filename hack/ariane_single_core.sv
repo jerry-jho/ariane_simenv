@@ -1,9 +1,9 @@
 module ariane_single_core #(
-    localparam AXI_DATA_WIDTH = 64,
-    localparam AXI_ADDR_WIDTH = 64,
-    localparam AXI_USER_WIDTH = 1,
-    localparam AXI_STRB_WIDTH = (AXI_DATA_WIDTH/8),
-    localparam AXI_ID_WIDTH   = ariane_soc::IdWidth
+    parameter AXI_DATA_WIDTH = 64,
+    parameter AXI_ADDR_WIDTH = 64,
+    parameter AXI_USER_WIDTH = 1,
+    parameter AXI_STRB_WIDTH = 8,
+    parameter AXI_ID_WIDTH   = 4
 )(
     input  clk,
     input  rst_n,
@@ -158,7 +158,7 @@ module ariane_single_core #(
         .master(slave[1])
     );
     
-    dm_axi_top (
+    dm_axi_top i_dm_axi_top (
         .clk_i                (clk                   ),
         .rst_ni               (rst_n                 ),
         .ndmreset_o           (ndmreset              ),
@@ -240,7 +240,7 @@ module ariane_single_core #(
     );
     
     ///////////////////////// MX BUS /////////////////////////
-    
+/*    
     AXI_BUS #(
         .AXI_ADDR_WIDTH ( AXI_ADDR_WIDTH        ),
         .AXI_DATA_WIDTH ( AXI_DATA_WIDTH           ),
@@ -261,14 +261,14 @@ module ariane_single_core #(
         .slv    ( master[ariane_soc::DRAM] ),
         .mst    ( mx_axi_atomics           )
     );
-    
+*/    
     ariane_axi::req_t    mx_axi_s_req;
     ariane_axi::resp_t   mx_axi_s_resp;
     
     axi_slave_connect i_mx_axi_slave_connect (
-        .slave      ( mx_axi_atomics          ),
-        .axi_req_o  ( mx_axi_s_req            ),
-        .axi_resp_i ( mx_axi_s_resp           )
+        .slave      ( master[ariane_soc::DRAM] ),
+        .axi_req_o  ( mx_axi_s_req             ),
+        .axi_resp_i ( mx_axi_s_resp            )
     );
     
     axim2p #(

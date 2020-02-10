@@ -48,7 +48,7 @@ package ariane_soc;
   localparam logic[63:0] SPILength      = 64'h800000;
   localparam logic[63:0] EthernetLength = 64'h10000;
   localparam logic[63:0] GPIOLength     = 64'h1000;
-  localparam logic[63:0] DRAMLength     = 64'h40000000; // 1GByte of DDR (split between two chips on Genesys2)
+  localparam logic[63:0] DRAMLength     = 64'h80000000; // 2GByte of DDR
   localparam logic[63:0] SRAMLength     = 64'h1800000;  // 24 MByte of SRAM
   // Instantiate AXI protocol checkers
   localparam bit GenProtocolChecker = 1'b0;
@@ -62,8 +62,8 @@ package ariane_soc;
     TimerBase    = 64'h1800_0000,
     SPIBase      = 64'h2000_0000,
     EthernetBase = 64'h3000_0000,
-    GPIOBase     = 64'h4000_0000,
-    DRAMBase     = 64'h8000_0000
+    GPIOBase     = 64'hC000_0000,
+    DRAMBase     = 64'h4000_0000
   } soc_bus_start_t;
 
   localparam NrRegion = 1;

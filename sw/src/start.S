@@ -34,9 +34,11 @@ _start:
     mv x31, x1
     
     
-	lui  sp, 0x18
+	lui sp,0x40000
+    addi sp,sp,0x200
 	call crtmain
-    ecall
+    #ecall
+    #fence
 deadloop:
     j deadloop
 

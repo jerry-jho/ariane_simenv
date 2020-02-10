@@ -3,15 +3,22 @@
 module tb;
     
     reg clk = 1'b0;
-    initial forever #5 clk = ~clk; //100MHz
+    initial forever #5ns clk = ~clk; //100MHz
     
-    reg rst_n = 1'b0;
-    initial #112 rst_n = 1'b1;
+    reg rst_n = 1'b1;
+    initial begin
+        #112ns rst_n = 1'b0;
+        #112ns rst_n = 1'b1;
+    end
+  
+    string fsdb_name = "top.fsdb";
     
     initial begin
+        $value$plusargs("FSDB_NAME=%s", fsdb_name);
+                  
         $display("===== SIM =====");
         `ifdef _FSDB
-            $fsdbDumpfile("top.fsdb");
+            $fsdbDumpfile(fsdb_name);
             $fsdbDumpvars(0,tb);
 		`endif
         
@@ -44,9 +51,9 @@ module tb;
             check_a0 = 1'b1;
         end        
     end
-    
-    always @(posedge ariane_single_core.i_ariane.id_stage_i.decoder_i.ecall) begin
-        fetch_a0_data = ariane_single_core.i_ariane.instr_tracer_i.gp_reg_file[10];
+    `ifndef NETLIST
+    always @(posedge i_ariane_single_core.i_ariane.id_stage_i.decoder_i.ecall) begin
+        fetch_a0_data = i_ariane_single_core.i_ariane.instr_tracer_i.gp_reg_file[10];
         $display("-- Exit code %016X",fetch_a0_data);
         if (check_a0) begin
             $display("--------------------------------------");
@@ -59,7 +66,7 @@ module tb;
         repeat(20) @(posedge clk);
         $finish;
     end
-    
+    `endif
     localparam AXI_DATA_WIDTH = 64;
     localparam AXI_ADDR_WIDTH = 64;
     localparam AXI_STRB_WIDTH = (AXI_DATA_WIDTH/8);
@@ -139,7 +146,7 @@ module tb;
     
     
     
-    ariane_single_core (
+    ariane_single_core i_ariane_single_core (
         .clk(clk),
         .rst_n(rst_n),
 

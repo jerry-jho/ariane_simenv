@@ -114,12 +114,9 @@ ariane:
     src/tech_cells_generic/src/cluster_clock_inverter.sv, 
     src/tech_cells_generic/src/pulp_clock_mux2.sv,    
     src/common_cells/src/rr_arb_tree.sv,
-    include/instr_tracer_pkg.sv,
-    src/util/instr_tracer_if.sv,  
-    $ARIANE_SIMENV_ROOT/hack/instr_tracer.sv, 
     src/util/sram.sv,     
     src/fpga-support/rtl/SyncSpRamBeNx64.sv,
-    src/axi/src/axi_intf.sv,
+    $ARIANE_SIMENV_ROOT/hack/axi_intf.sv,
     src/axi_mem_if/src/axi2mem.sv,
     src/util/axi_master_connect.sv,
     src/util/axi_slave_connect.sv,
@@ -132,12 +129,6 @@ ariane:
     src/riscv-dbg/src/dmi_jtag.sv,
     src/riscv-dbg/src/dmi_jtag_tap.sv,
     src/riscv-dbg/debug_rom/debug_rom.sv,
-    src/axi_riscv_atomics/src/axi_riscv_amos.sv,
-    src/axi_riscv_atomics/src/axi_riscv_amos_alu.sv,
-    src/axi_riscv_atomics/src/axi_riscv_atomics.sv,
-    src/axi_riscv_atomics/src/axi_riscv_atomics_wrap.sv,
-    src/axi_riscv_atomics/src/axi_riscv_lrsc.sv,
-    src/axi_riscv_atomics/src/axi_res_tbl.sv,
     src/axi_node/src/axi_AR_allocator.sv,
     src/axi_node/src/axi_AW_allocator.sv,
     src/axi_node/src/axi_BR_allocator.sv,
@@ -157,9 +148,8 @@ ariane:
     src/clint/clint.sv,    
     src/clint/axi_lite_interface.sv,
     src/register_interface/src/reg_intf_pkg.sv,
-    src/register_interface/src/apb_to_reg.sv,    
-    src/register_interface/src/reg_intf.sv,
-    src/register_interface/src/reg_test.sv,
+    $ARIANE_SIMENV_ROOT/hack/apb_to_reg.sv,    
+    $ARIANE_SIMENV_ROOT/hack/reg_intf.sv,
     fpga/src/axi2apb/src/axi2apb_64_32.sv,
     fpga/src/axi_slice/src/axi_aw_buffer.sv,
     fpga/src/axi_slice/src/axi_ar_buffer.sv,
@@ -184,12 +174,34 @@ ariane:
     $ARIANE_SIMENV_ROOT/hack/ariane_peripherals.sv,
     $ARIANE_SIMENV_ROOT/hack/axim2p.sv,
     $ARIANE_SIMENV_ROOT/hack/ariane_single_core.sv,  
-    $ARIANE_SIMENV_ROOT/hack/ariane_regfile.sv,     
+    src/ariane_regfile_ff.sv,     
   ]
   
+fpga:  
+    defines: [
+        VERILATOR
+    ]
+    
+fpga_syn:  
+    root : '$ARIANE_ROOT'
+    defines: [
+        VERILATOR,
+        NETLIST
+    ]
+    files : [
+        include/riscv_pkg.sv,
+        src/riscv-dbg/src/dm_pkg.sv,    
+        $ARIANE_SIMENV_ROOT/hack/ariane_pkg.sv,
+        $ARIANE_SIMENV_ROOT/hack/ariane_soc_pkg.sv,
+        $PWD/ariane.post_synth.sim.v
+    ]
+    
 tb:
     root : '$ARIANE_SIMENV_ROOT'
     files : [
+        $ARIANE_ROOT/include/instr_tracer_pkg.sv,
+        $ARIANE_ROOT/src/util/instr_tracer_if.sv,  
+        $ARIANE_SIMENV_ROOT/hack/instr_tracer.sv, 
         tb/tb.sv,
         tb/axi_sram.sv
     ]
