@@ -38,7 +38,7 @@ _start:
     addi sp,sp,0x200
 	call crtmain
     #ecall
-    #fence
+    fence
 deadloop:
     j deadloop
 

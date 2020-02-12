@@ -42,7 +42,8 @@ firmware:
 	$(GCC) $(INCLUDES) $(CFLAGS) $(ARCH_IMC) $(APP) $(STARTUP) $(MAINSRC) -T$(LD_SCRIPT) -o app.elf
 	$(OBJDUMP) -dx --source app.elf > app.lst
 	$(OBJCOPY) -O verilog app.elf app.mem
-	$(MEM64) app.mem 64 $(BASE) > app.m64
+	$(MEM64) app.mem 64 $(BASE) mem > app.m64
+	$(MEM64) app.mem 32 $(BASE) xsct > app.xsct.tcl
     
 elf2m64:
 	$(OBJCOPY) -O verilog $(ELF) $(TEMPMEM)

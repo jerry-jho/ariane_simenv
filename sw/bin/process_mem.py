@@ -1,7 +1,7 @@
 import sys
 from collections import OrderedDict
 
-_,filename,w,b = sys.argv
+_,filename,w,b,ost = sys.argv
 w = int(w) >> 3
 b = int(b,base=16)
 mdata = OrderedDict()
@@ -54,13 +54,18 @@ while True:
         addr_jump = True
         continue
     if addr_jump:
-        print('@%08X' % ((addr-b) // w))    
+        if ost == "mem":
+            print('@%08X' % ((addr-b) // w))    
         addr_jump = False
     line=''
+    saddr = addr
     for _ in range(w):
         line = ("%02X" % mdata.get(addr,0)) + line
         addr += 1
-    print(line)
+    if ost == "mem":
+        print(line)
+    elif ost == "xsct":
+        print('mwr 0x%08X 0x' % saddr + line)
     if addr > max_addr:
         break
         

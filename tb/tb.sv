@@ -156,6 +156,10 @@ module tb;
         .tx(),
         .rx(1'b1),
         
+        .gpio_io_i(32'hdeadbeef),
+        .gpio_io_o(),
+        .gpio_io_t(),  
+        
         .test_en(1'b0),
         .jtag_TCK(1'b0),
         .jtag_TMS(1'b0),

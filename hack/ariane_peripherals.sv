@@ -17,7 +17,7 @@ module ariane_peripherals #(
     parameter bit InclUART     = 1,
     parameter bit InclSPI      = 0,
     parameter bit InclEthernet = 0,
-    parameter bit InclGPIO     = 0,
+    parameter bit InclGPIO     = 1,
     parameter bit InclTimer    = 1
 ) (
     input  logic       clk_i           , // Clock
@@ -27,10 +27,15 @@ module ariane_peripherals #(
     AXI_BUS.Slave      spi             ,
     AXI_BUS.Slave      ethernet        ,
     AXI_BUS.Slave      timer           ,
+    AXI_BUS.Slave      gpio            ,
     output logic [1:0] irq_o           ,
     // UART
     input  logic       rx_i            ,
     output logic       tx_o            ,
+    // GPIO32
+    input  logic[31:0] gpio_io_i       ,
+    output logic[31:0] gpio_io_t       ,
+    output logic[31:0] gpio_io_o       ,
     // Ethernet
     input  wire        eth_txck        ,
     input  wire        eth_rxck        ,
@@ -593,5 +598,119 @@ module ariane_peripherals #(
             .PSLVERR ( timer_pslverr    ),
             .irq_o   ( irq_sources[6:3] )
         );
+    end
+ 
+    // ---------------
+    // 6. GPIO
+    // ---------------
+    if (InclGPIO) begin : gen_gpio
+        REG_BUS #(
+            .ADDR_WIDTH ( 32 ),
+            .DATA_WIDTH ( 32 )
+        ) reg_bus (clk_i);
+
+        logic         gpio_penable;
+        logic         gpio_pwrite;
+        logic [31:0]  gpio_paddr;
+        logic         gpio_psel;
+        logic [31:0]  gpio_pwdata;
+        logic [31:0]  gpio_prdata;
+        logic         gpio_pready;
+        logic         gpio_pslverr;
+
+        axi2apb_64_32 #(
+            .AXI4_ADDRESS_WIDTH ( AxiAddrWidth  ),
+            .AXI4_RDATA_WIDTH   ( AxiDataWidth  ),
+            .AXI4_WDATA_WIDTH   ( AxiDataWidth  ),
+            .AXI4_ID_WIDTH      ( AxiIdWidth    ),
+            .AXI4_USER_WIDTH    ( AxiUserWidth  ),
+            .BUFF_DEPTH_SLAVE   ( 2             ),
+            .APB_ADDR_WIDTH     ( 32            )
+        ) i_axi2apb_64_32_gpio (
+            .ACLK      ( clk_i          ),
+            .ARESETn   ( rst_ni         ),
+            .test_en_i ( 1'b0           ),
+            .AWID_i    ( gpio.aw_id     ),
+            .AWADDR_i  ( gpio.aw_addr   ),
+            .AWLEN_i   ( gpio.aw_len    ),
+            .AWSIZE_i  ( gpio.aw_size   ),
+            .AWBURST_i ( gpio.aw_burst  ),
+            .AWLOCK_i  ( gpio.aw_lock   ),
+            .AWCACHE_i ( gpio.aw_cache  ),
+            .AWPROT_i  ( gpio.aw_prot   ),
+            .AWREGION_i( gpio.aw_region ),
+            .AWUSER_i  ( gpio.aw_user   ),
+            .AWQOS_i   ( gpio.aw_qos    ),
+            .AWVALID_i ( gpio.aw_valid  ),
+            .AWREADY_o ( gpio.aw_ready  ),
+            .WDATA_i   ( gpio.w_data    ),
+            .WSTRB_i   ( gpio.w_strb    ),
+            .WLAST_i   ( gpio.w_last    ),
+            .WUSER_i   ( gpio.w_user    ),
+            .WVALID_i  ( gpio.w_valid   ),
+            .WREADY_o  ( gpio.w_ready   ),
+            .BID_o     ( gpio.b_id      ),
+            .BRESP_o   ( gpio.b_resp    ),
+            .BVALID_o  ( gpio.b_valid   ),
+            .BUSER_o   ( gpio.b_user    ),
+            .BREADY_i  ( gpio.b_ready   ),
+            .ARID_i    ( gpio.ar_id     ),
+            .ARADDR_i  ( gpio.ar_addr   ),
+            .ARLEN_i   ( gpio.ar_len    ),
+            .ARSIZE_i  ( gpio.ar_size   ),
+            .ARBURST_i ( gpio.ar_burst  ),
+            .ARLOCK_i  ( gpio.ar_lock   ),
+            .ARCACHE_i ( gpio.ar_cache  ),
+            .ARPROT_i  ( gpio.ar_prot   ),
+            .ARREGION_i( gpio.ar_region ),
+            .ARUSER_i  ( gpio.ar_user   ),
+            .ARQOS_i   ( gpio.ar_qos    ),
+            .ARVALID_i ( gpio.ar_valid  ),
+            .ARREADY_o ( gpio.ar_ready  ),
+            .RID_o     ( gpio.r_id      ),
+            .RDATA_o   ( gpio.r_data    ),
+            .RRESP_o   ( gpio.r_resp    ),
+            .RLAST_o   ( gpio.r_last    ),
+            .RUSER_o   ( gpio.r_user    ),
+            .RVALID_o  ( gpio.r_valid   ),
+            .RREADY_i  ( gpio.r_ready   ),
+            .PENABLE   ( gpio_penable   ),
+            .PWRITE    ( gpio_pwrite    ),
+            .PADDR     ( gpio_paddr     ),
+            .PSEL      ( gpio_psel      ),
+            .PWDATA    ( gpio_pwdata    ),
+            .PRDATA    ( gpio_prdata    ),
+            .PREADY    ( gpio_pready    ),
+            .PSLVERR   ( gpio_pslverr   )
+        );
+
+        apb_to_reg i_apb_to_reg (
+            .clk_i     ( clk_i        ),
+            .rst_ni    ( rst_ni       ),
+            .penable_i ( gpio_penable ),
+            .pwrite_i  ( gpio_pwrite  ),
+            .paddr_i   ( gpio_paddr   ),
+            .psel_i    ( gpio_psel    ),
+            .pwdata_i  ( gpio_pwdata  ),
+            .prdata_o  ( gpio_prdata  ),
+            .pready_o  ( gpio_pready  ),
+            .pslverr_o ( gpio_pslverr ),
+            .reg_o     ( reg_bus      )
+        );
+        
+        //reg_bus.addr;
+        wire write       = reg_bus.write;
+        
+        always @(posedge clk_i) begin
+            if (write) begin
+                gpio_io_o <= (write && reg_bus.addr[3:0] == 4'h0) ? reg_bus.wdata : gpio_io_o;
+                gpio_io_t <= (write && reg_bus.addr[3:0] == 4'h4) ? reg_bus.wdata : gpio_io_t;
+            end
+        end
+
+        assign reg_bus.rdata = gpio_io_i;
+        assign reg_bus.error = 1'b0;
+        assign reg_bus.ready = 1'b1;
+    
     end
 endmodule
